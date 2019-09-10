@@ -3,11 +3,11 @@ image: docker:latest
 before_script: 
   - export 
 stages: 
-  - build 
+  - gradle-build 
 
 gradle-build: 
   image: gradle:alpine 
-  stage: build 
+  stage: gradle-build
   variables: 
     GRADLE_OPTS: "-Dorg.gradle.daemon=false" 
   before_script: 
