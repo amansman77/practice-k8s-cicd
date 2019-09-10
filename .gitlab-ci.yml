@@ -1,0 +1,24 @@
+image: docker:latest 
+
+before_script: 
+  - export 
+stages: 
+  - build 
+
+gradle-build: 
+  image: gradle:alpine 
+  stage: build 
+  variables: 
+    GRADLE_OPTS: "-Dorg.gradle.daemon=false" 
+  before_script: 
+    - export GRADLE_USER_HOME=`pwd`/.gradle 
+  script: 
+    - gradle build 
+  cache: 
+    key: "$CI_COMMIT_REF_NAME" 
+    paths: 
+      - build 
+      - .gradle 
+  artifacts: 
+    paths: 
+      - build/libs/*.jar 
