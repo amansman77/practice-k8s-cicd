@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: citest-svc
+  labels:
+    app: citest
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: citest
+  type: LoadBalancer
