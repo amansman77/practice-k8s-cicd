@@ -133,6 +133,7 @@ before_script의 export 명령의 통해 우리는 다양한 환경변수를 기
 
 `$CI_PIPELINE_ID`는 각 파이프 라인의 번호를 가지고있다.
 
+파일 위치는 아래 사진을 참고
 ![files](./image/files.png)
 
 # 배포  자동화  하기
