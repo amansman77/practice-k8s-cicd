@@ -55,4 +55,3 @@ kubernetes-deploy:
   dependencies: []
   environment: 
     name: test
-    url: http://$SVCIP
