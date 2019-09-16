@@ -209,6 +209,7 @@ script 하위에 내용이 생소하니 한줄씩 확인해보자
 여기서 사용된 **\$KUBE_NAMESPACE**는 깃랩과 쿠버네티스 연동시 생성된 쿠버네티스 네임스페이스명을 담고있다.
 
 `export DEPLOYS=$(kubectl get deployments | grep citest | wc -l)`
+
 이 부분은 해당 네임스페이스에 같은 이름의 Deployment가 존재하는지 확인하는 부분이다.
 
 ``grep citest`` 부분에서 **citest**는 **deployment.yaml**에서 정의한 object에 name이므로 상황에 따라 변경해야한다.
@@ -218,17 +219,20 @@ script 하위에 내용이 생소하니 한줄씩 확인해보자
 이부분은 조금 길어서 3번의 나눠서 확인해보자
 
 `if [ ${DEPLOYS} -eq 0 ]` 
+
 우선 이부분은 앞에서 확인한 Deployment 존재여부를 체크한다.
 DEPLOYS가 0인지 확인한다.
 
 >Deployment가 존재하지 않으면 DEPLOYS는 0을 가지고있다.
 >
 `then kubectl apply -f citest.yaml`
+
 이 부분은 DEPLOYS가 0일때 작동한다.
 
 우리가 작성해둔 `citest.yaml`파일을 쿠버네티스 클러스터에 배포한다.
 
 `else kubectl --record deployment.apps/citest set image deployment.v1.apps/citest citest=$CI_REGISTRY_IMAGE:$CI_PIPELINE_ID`
+
 이 부분은 DEPLOYS가 1일때 작동한다.
 
 동일한 이름의 Deployment가 존재하므로 이미지 버전만을 업데이트한다.
