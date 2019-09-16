@@ -38,8 +38,9 @@ Kubernetes Cluster를 GitLab 프로젝트에 연동하고 Runner를 생성해보
 	>Kubernetes master 주소는 `kubectl cluster-info` 명령을 통해 확인할 수 있다.
 5. **CA Certificate** 에는 부여받은 계정에 CA 인증서를 입력한다.
 6. **Service Token** 에는 부여받은 계정에 Service Token을 입력한다
-7. 계정에 Token과 CA 인증서는 Dashboard에서 확인 가능하다.![이미지 설명](http://placehold.it/402x400)
-8. 
+7. 계정에 Token과 CA 인증서는 Dashboard에서 확인 가능하다.!
+[이미지 설명](./image/token.png)
+
 
 ## GitLab  Runner  생성하기
 Kubernetes Cluster 등록이 완료되고 전환된 화면에서 **GitLab Runner**를 설치할 것이다.
