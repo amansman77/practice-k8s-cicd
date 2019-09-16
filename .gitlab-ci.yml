@@ -42,7 +42,58 @@ docker-build:
     - docker push $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID
     - docker push $CI_REGISTRY_IMAGE:latest
 
-deploy-staging:
+image: docker:18.09 #베이스 이미지 버전
+
+services:
+  - name: docker:18.09-dind
+    command: ["--insecure-registry=192.168.0.41:4567"]
+  
+variables:
+  DOCKER_HOST: tcp://localhost:2375
+
+before_script: #Job 실행 전 우선 실행 스크립트
+  - export 
+  
+stages:
+  - gradle-build
+  - docker-build
+  - kubernetes-deploy
+
+gradle-build: 
+  image: gradle:alpine 
+  stage: gradle-build
+  variables: 
+    GRADLE_OPTS: "-Dorg.gradle.daemon=false" 
+  before_script: 
+    - export GRADLE_USER_HOME=`pwd`/.gradle 
+  script: 
+    - gradle build 
+  cache: 
+    key: "$CI_COMMIT_REF_NAME" #Brunch 기준으로 캐싱
+    paths: #캐싱할 대상들 
+      - build 
+      - .gradle 
+  artifacts: #다음 Job으로 전달할 파일 또는 디렉토리
+    paths: 
+      - build/libs/*.jar 
+      
+docker-build: 
+  stage: docker-build
+  script: 
+    - docker login -u admin -p admin123 $CI_REGISTRY 
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID . 
+    - docker tag $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID
+    - docker push $CI_REGISTRY_IMAGE:latest
+
+kubernetes-deploy:
+  image: lwolf/kubectl_deployer
+  stage: deploy
+  script: 
+    - kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+    - export DEPLOYS=$(kubectl get deployments | grep citest | wc -l)
+    - if [ ${DEPLOYS}  -eq 0 ]; then kubectl apply -f citest.yaml; else kubectl --record deployment.apps/citest set image deployment.v1.apps/citest citest=$CI_REGISTRY_IMAGE:$CI_PIPELINE_ID; fi
+  dependencies: []:
   image: lwolf/kubectl_deployer
   stage: deploy
   script: 
