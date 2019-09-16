@@ -215,6 +215,3 @@ DEPLOYS가 0인지 확인한다.
 `else kubectl --record deployment.apps/citest set image deployment.v1.apps/citest citest=$CI_REGISTRY_IMAGE:$CI_PIPELINE_ID`
 이 부분은 DEPLOYS가 1일때 작동한다.
 동일한 이름의 Deployment가 존재하므로 이미지 버전만을 업데이트한다.
-
- 
- 
