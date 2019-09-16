@@ -42,9 +42,9 @@ docker-build:
     - docker push $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID
     - docker push $CI_REGISTRY_IMAGE:latest
 
-deploy-staging:
+kubernetes-deploy:
   image: lwolf/kubectl_deployer
-  stage: deploy
+  stage: kubernetes-deploy
   script: 
     - kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
     - export DEPLOYS=$(kubectl get deployments | grep citest | wc -l)
