@@ -133,7 +133,7 @@ before_script의 export 명령의 통해 우리는 다양한 환경변수를 기
 
 `$CI_PIPELINE_ID`는 각 파이프 라인의 번호를 가지고있다.
 
-파일 구조 보이는 사진
+![files](./image/files.png)
 
 # 배포  자동화  하기
 어플리케이션의 빌드가 모두 완료되었다면 운영중인 Kubernetes 환경에 완성된 Docker Image를 배포해보자
