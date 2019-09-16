@@ -87,7 +87,7 @@ Job을 등록하는 방법은 `.gitlab-ci.yml`문서에 기록하면 된다.
 	    paths: 
 	      - build/libs/*.jar
  위 내용을 작성하고 Commit 하면 자동으로 프로젝트를 빌드하게 된다.
- ![Gradle build passed](./image/pipeline.png)
+ ![Gradle build passed](./image/pipeline_1.png)
 ## Docker  Build  자동화
 Gradle Build가 끝나면 완성된 Jar 파일을 Docker Image 형태로 만들어보자.
 
