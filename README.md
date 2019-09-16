@@ -175,9 +175,9 @@ stages:
 ```
 해당 스테이지에서 실제로 해야하는 작업을 정의하자.
 ```
-deploy-staging:
+kubernetes-deploy:
   image: lwolf/kubectl_deployer
-  stage: deploy
+  stage: kubernetes-deploy
   script: 
     - kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
     - export DEPLOYS=$(kubectl get deployments | grep citest | wc -l)
