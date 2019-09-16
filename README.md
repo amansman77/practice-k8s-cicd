@@ -1,4 +1,4 @@
-﻿# GitLab CI를 통해 k8s에 서비스 배포하기
+# GitLab CI를 통해 k8s에 서비스 배포하기
 Gitlab에서 제공하는 CI/CD 기능을 통해 소스 커밋시점에 배포까지 자동화하기
 1. GitLab CI/CD 설정하기
 	1. Kubernetes Cluster 연동하기
@@ -39,7 +39,8 @@ Kubernetes Cluster를 GitLab 프로젝트에 연동하고 Runner를 생성해보
 5. **CA Certificate** 에는 부여받은 계정에 CA 인증서를 입력한다.
 6. **Service Token** 에는 부여받은 계정에 Service Token을 입력한다
 7. 계정에 Token과 CA 인증서는 Dashboard에서 확인 가능하다.!
-[이미지 설명](./image/token.png)
+![토큰 찾는 이미지](./image/token.png)
+![k8s 등록하는 이미지](./image/k8s.png)
 
 
 ## GitLab  Runner  생성하기
@@ -86,6 +87,7 @@ Job을 등록하는 방법은 `.gitlab-ci.yml`문서에 기록하면 된다.
 	    paths: 
 	      - build/libs/*.jar
  위 내용을 작성하고 Commit 하면 자동으로 프로젝트를 빌드하게 된다.
+ ![Gradle build passed](./image/pipeline.png)
 ## Docker  Build  자동화
 Gradle Build가 끝나면 완성된 Jar 파일을 Docker Image 형태로 만들어보자.
 
