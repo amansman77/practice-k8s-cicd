@@ -12,7 +12,8 @@ before_script: #Job 실행 전 우선 실행 스크립트
   
 stages:
   - gradle-build
-  - docker-build #docker-build 추가
+  - docker-build
+  - kubernetes-deploy
 
 gradle-build: 
   image: gradle:alpine 
@@ -40,3 +41,12 @@ docker-build:
     - docker tag $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID $CI_REGISTRY_IMAGE:latest
     - docker push $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID
     - docker push $CI_REGISTRY_IMAGE:latest
+
+deploy-staging:
+  image: lwolf/kubectl_deployer
+  stage: deploy
+  script: 
+    - kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+    - export DEPLOYS=$(kubectl get deployments | grep citest | wc -l)
+    - if [ ${DEPLOYS}  -eq 0 ]; then kubectl apply -f citest.yaml; else kubectl --record deployment.apps/citest set image deployment.v1.apps/citest citest=$CI_REGISTRY_IMAGE:$CI_PIPELINE_ID; fi
+  dependencies: []

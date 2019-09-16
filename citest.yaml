@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment #정의할 오브젝트의 종류
+metadata:
+  name: citest #별칭
+  labels:
+    app: citest #라벨
+spec:
+  replicas: 3 #복제본 수
+  selector:
+    matchLabels:
+      app: citest #관리할 Pod의 검색조건
+  template:
+    metadata:
+      labels:
+        app: citest #생성할 Pod의 라벨
+    spec:
+      containers: 
+      - name: citest #생성할 Pod의 이름
+        image: 192.168.0.41:4567/ywkim/cicd:latest #Pod 생성시 사용할 Image
+        ports:
+        - containerPort: 8080 #Pod의 포트 사용정보
