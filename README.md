@@ -154,6 +154,7 @@ before_script의 export 명령의 통해 우리는 다양한 환경변수를 기
 이 예제에서는 Deployment를 사용해서 배포해보자
 ### Deployment 오브젝트 스펙 준비하기
 Deployment 배포에 필요한 yaml 문서는 아래와 같다.
+
 `citest.yaml`
 
     apiVersion: apps/v1
@@ -204,6 +205,7 @@ kubernetes-deploy:
 script 하위에 내용이 생소하니 한줄씩 확인해보자
 
 `kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"`
+
 이 부분은 kubectl 명령을 통해 네임스페이스가 존재하지 않으면 생성하는 부분이다.
 
 여기서 사용된 **\$KUBE_NAMESPACE**는 깃랩과 쿠버네티스 연동시 생성된 쿠버네티스 네임스페이스명을 담고있다.
