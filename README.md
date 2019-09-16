@@ -25,7 +25,9 @@ Nexus Repository3 v3.14.0
 # GitLab CI/CD 설정하기
 
 GitLab에서 CI/CD 기능을 사용하기 위해서는 Gitlab Runner라는 인스턴스가 필요하다.
+
 GitLab에서는 다양한 Runner를 지원하는데 우리는 그중에서 Kubernetes에 Docker Container 형태로 제공되는 Runner를 사용 할 예정이다.
+
 Kubernetes Cluster를 GitLab 프로젝트에 연동하고 Runner를 생성해보자.
 
 ## Kubernetes Cluster 연동하기
@@ -45,8 +47,11 @@ Kubernetes Cluster를 GitLab 프로젝트에 연동하고 Runner를 생성해보
 
 ## GitLab  Runner  생성하기
 Kubernetes Cluster 등록이 완료되고 전환된 화면에서 **GitLab Runner**를 설치할 것이다.
+
 GitLab은 GitLab Runner를 원격 kubernetes에 설치하기 위해 **Helm**을 사용한다.
+
 초기에는 Helm이 설치되어있지 않아 GitLab Runner에 Install 버튼이 비활성화되어 있을 것이다.
+
 1. **Helm**을 Install 버튼을 눌러 설치한다.
 2. **GitLab Runner**를 Install 버튼을 눌러 설치한다.
 3. 프로젝트 메뉴에서 **Settings > CI/CD > Runners**메뉴에 **Runners activated  for this project** 항목에서 Runner가 정상적으로 등록되었는지 확인하다.
@@ -115,6 +120,7 @@ Gradle Build가 끝나면 완성된 Jar 파일을 Docker Image 형태로 만들�
       DOCKER_HOST: tcp://localhost:2375
 
 이제 docker-build stage에서 해야 할 작업을 정의해보자	
+
 아래의 코드는 도커 빌드과 완성된 도커이미지를 nexus repository에 `push`하는 코드이다.
 
     docker-build: 
@@ -126,9 +132,13 @@ Gradle Build가 끝나면 완성된 Jar 파일을 Docker Image 형태로 만들�
         - docker push $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID
         - docker push $CI_REGISTRY_IMAGE:latest
 before_script의 export 명령의 통해 우리는 다양한 환경변수를 기본으로 가지고있다.
+
 `$CI_REGISTRY`는 우리가 사용하는 nexus repository의 주소이다.
+
 `$CI_REGISTRY_IMAGE`는 nexus repository에서 해당 프로젝트가 사용할 디렉토리 경로인다.
+
 > 보통 레포지토리 주소/계정명/프로젝트명 으로 이루어져있다.
+
 > ex) 192.168.0.41:4567/ywkim/citest
 
 `$CI_PIPELINE_ID`는 각 파이프 라인의 번호를 가지고있다.
@@ -170,7 +180,9 @@ Deployment 배포에 필요한 yaml 문서는 아래와 같다.
 
 ### .gitlab-ci.yml에 Kubernetes 배포 추가하기
 배포에 사용할 오브젝트 스펙의 정의가 끝났다.
+
 이제 배포 파이프라인에 관련 Job을 추가해야한다.
+
  `.gitlab-ci.yml`파일에서  **stages**  부분에 kubernetes-deploy 를 추가해보자
 ```
 stages:
@@ -193,10 +205,12 @@ script 하위에 내용이 생소하니 한줄씩 확인해보자
 
 `kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"`
 이 부분은 kubectl 명령을 통해 네임스페이스가 존재하지 않으면 생성하는 부분이다.
+
 여기서 사용된 **\$KUBE_NAMESPACE**는 깃랩과 쿠버네티스 연동시 생성된 쿠버네티스 네임스페이스명을 담고있다.
 
 `export DEPLOYS=$(kubectl get deployments | grep citest | wc -l)`
 이 부분은 해당 네임스페이스에 같은 이름의 Deployment가 존재하는지 확인하는 부분이다.
+
 ``grep citest`` 부분에서 **citest**는 **deployment.yaml**에서 정의한 object에 name이므로 상황에 따라 변경해야한다.
 
 `if [ ${DEPLOYS} -eq 0 ]; then kubectl apply -f citest.yaml; else kubectl --record deployment.apps/citest set image deployment.v1.apps/citest citest=$CI_REGISTRY_IMAGE:$CI_PIPELINE_ID; fi`
@@ -206,12 +220,15 @@ script 하위에 내용이 생소하니 한줄씩 확인해보자
 `if [ ${DEPLOYS} -eq 0 ]` 
 우선 이부분은 앞에서 확인한 Deployment 존재여부를 체크한다.
 DEPLOYS가 0인지 확인한다.
+
 >Deployment가 존재하지 않으면 DEPLOYS는 0을 가지고있다.
 >
 `then kubectl apply -f citest.yaml`
 이 부분은 DEPLOYS가 0일때 작동한다.
+
 우리가 작성해둔 `citest.yaml`파일을 쿠버네티스 클러스터에 배포한다.
 
 `else kubectl --record deployment.apps/citest set image deployment.v1.apps/citest citest=$CI_REGISTRY_IMAGE:$CI_PIPELINE_ID`
 이 부분은 DEPLOYS가 1일때 작동한다.
+
 동일한 이름의 Deployment가 존재하므로 이미지 버전만을 업데이트한다.
