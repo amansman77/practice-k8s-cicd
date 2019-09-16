@@ -19,3 +19,18 @@ spec:
         image: 192.168.0.41:4567/ywkim/cicd:latest #Pod 생성시 사용할 Image
         ports:
         - containerPort: 8080 #Pod의 포트 사용정보
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: citest-svc
+  labels:
+    app: citest
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: citest
+  type: LoadBalancer
