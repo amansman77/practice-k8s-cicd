@@ -37,6 +37,7 @@ Kubernetes Cluster를 GitLab 프로젝트에 연동하고 Runner를 생성해보
 3. **Kubernetes cluster name** 에 인지하기 쉬운 클러스터 명을 입력한다.
 4. **API URL** 에 **Kubernetes master** 주소를 입력한다.
 	>이 예제에서 사용된 마스터의 주소는 `https://192.168.0.81:6443` 이다.
+  
 	>Kubernetes master 주소는 `kubectl cluster-info` 명령을 통해 확인할 수 있다.
 5. **CA Certificate** 에는 부여받은 계정에 CA 인증서를 입력한다.
 6. **Service Token** 에는 부여받은 계정에 Service Token을 입력한다
