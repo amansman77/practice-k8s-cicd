@@ -266,6 +266,7 @@ DEPLOYS가 0인지 확인한다.
 
 `.gitlab-ci.yml` 파일에 kubernetes-deploy 부분을 아래와 같이 수정한다.
 
+
 ```
 kubernetes-deploy:
   image: lwolf/kubectl_deployer
@@ -280,9 +281,13 @@ kubernetes-deploy:
   environment: 
     name: test
  ```
+ 
  서비스 등록을 위해 **script** 부분에 아래 두줄이 추가되었다.
+ 
  `kubectl apply -f citest-svc.yaml`은 우리가 작성한 서비스 스펙을 등록한다.
+ 
 ` echo $(kubectl get svc citest-svc --output jsonpath='{.status.loadBalancer.ingress[0].ip}')`은 등록된 서비스에 외부 아이피를 화면에 출력한다.
 
 Job이 완료되면 해당 Job에 터미널에서 서비스의 아이피를 다음과 같이 확인할 수 있다.
+
 ![아이피 확인 화면](./image/service_ip.png)
