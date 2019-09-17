@@ -16,11 +16,13 @@ GitLab Comunity Edition v11.10.4
 
 Kubernetes v1.15.3
 >Kubernetes master : https://192.168.0.81:6443
+
 >DashBoard Address : http://192.168.0.90
 
 Nexus Repository3 v3.14.0
 
 >Address : https://192.168.0.41:8081
+
 >Docker registry : http://192.168.0.41:4567
 
 # GitLab CI/CD 설정하기
