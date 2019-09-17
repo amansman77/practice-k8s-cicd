@@ -50,8 +50,7 @@ kubernetes-deploy:
     - export DEPLOYS=$(kubectl get deployments | grep citest | wc -l)
     - if [ ${DEPLOYS}  -eq 0 ]; then kubectl apply -f citest.yaml; else kubectl --record deployment.apps/citest set image deployment.v1.apps/citest citest=$CI_REGISTRY_IMAGE:$CI_PIPELINE_ID; fi
     - kubectl apply -f citest-svc.yaml
-    - export SVCIP=$(kubectl get svc citest-svc --output jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    - echo $SVCIP
+    - echo $(kubectl get svc citest-svc --output jsonpath='{.status.loadBalancer.ingress[0].ip}')
   dependencies: []
   environment: 
     name: test
