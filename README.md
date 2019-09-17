@@ -1,4 +1,4 @@
-# GitLab CI를 통해 k8s에 서비스 배포하기
+﻿# GitLab CI를 통해 k8s에 서비스 배포하기
 Gitlab에서 제공하는 CI/CD 기능을 통해 소스 커밋시점에 배포까지 자동화하기
 1. GitLab CI/CD 설정하기
 	1. Kubernetes Cluster 연동하기
@@ -8,6 +8,7 @@ Gitlab에서 제공하는 CI/CD 기능을 통해 소스 커밋시점에 배포�
 	2. Docker Build 자동화
 3. 배포 자동화 하기
 	1. Kubernetes Cluster에 서비스 배포하기
+	2. 서비스 오브젝트 추가하기
 
 # 예제 환경
 GitLab Comunity Edition v11.10.4
@@ -239,3 +240,49 @@ DEPLOYS가 0인지 확인한다.
 이 부분은 DEPLOYS가 1일때 작동한다.
 
 동일한 이름의 Deployment가 존재하므로 이미지 버전만을 업데이트한다.
+## 서비스 오브젝트 추가하기
+어플리케이션을 배포해도 서비스 오브젝트가 없다면 웹 어플리케이션등은 확인이 어려워진다.
+외부에서 웹으로 접속 가능하게 하기위하여 서비스 오브젝트를 추가해보자.
+### Service 오브젝트 스펙 준비하기
+서비스 오브젝트 배포에 앞서 오브젝트 스펙을 정의해보자
+`citest-svc.yaml` 이라는 이름의 파일을 아래와 같이 작성해보자
+
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: citest-svc
+      labels:
+      app: citest
+    spec:
+      ports:
+      - port: 80
+        protocol: TCP
+        targetPort: 8080
+      selector:
+        app: citest
+      type: LoadBalancer
+
+### .gitlab-ci.yml에 추가하기
+
+`.gitlab-ci.yml` 파일에 kubernetes-deploy 부분을 아래와 같이 수정한다.
+
+```
+kubernetes-deploy:
+  image: lwolf/kubectl_deployer
+  stage: kubernetes-deploy
+  script: 
+    - kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+    - export DEPLOYS=$(kubectl get deployments | grep citest | wc -l)
+    - if [ ${DEPLOYS}  -eq 0 ]; then kubectl apply -f citest.yaml; else kubectl --record deployment.apps/citest set image deployment.v1.apps/citest citest=$CI_REGISTRY_IMAGE:$CI_PIPELINE_ID; fi
+    - kubectl apply -f citest-svc.yaml
+    - echo $(kubectl get svc citest-svc --output jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  dependencies: []
+  environment: 
+    name: test
+ ```
+ 서비스 등록을 위해 **script** 부분에 아래 두줄이 추가되었다.
+ `kubectl apply -f citest-svc.yaml`은 우리가 작성한 서비스 스펙을 등록한다.
+` echo $(kubectl get svc citest-svc --output jsonpath='{.status.loadBalancer.ingress[0].ip}')`은 등록된 서비스에 외부 아이피를 화면에 출력한다.
+
+Job이 완료되면 해당 Job에 터미널에서 서비스의 아이피를 다음과 같이 확인할 수 있다.
+![아이피 확인 화면](./image/service_ip.png)
