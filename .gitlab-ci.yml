@@ -2,7 +2,7 @@ image: docker:18.09 #베이스 이미지 버전
 
 services:
   - name: docker:18.09-dind
-    command: ["--insecure-registry=192.168.0.41:4567"]
+    command: ["--insecure-registry=192.168.0.51:4567"]
   
 variables:
   DOCKER_HOST: tcp://localhost:2375
@@ -36,7 +36,7 @@ gradle-build:
 docker-build: 
   stage: docker-build
   script: 
-    - docker login -u admin -p admin123 $CI_REGISTRY 
+    - docker login -u admin -p admin $CI_REGISTRY 
     - docker build -t $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID . 
     - docker tag $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID $CI_REGISTRY_IMAGE:latest
     - docker push $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID
