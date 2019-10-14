@@ -36,7 +36,7 @@ gradle-build:
 docker-build: 
   stage: docker-build
   script: 
-    - docker login -u admin -p admin 192.168.0.51:4567 
+    - docker login -u admin -p admin $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID . 
     - docker tag $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID $CI_REGISTRY_IMAGE:latest
     - docker push $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID
