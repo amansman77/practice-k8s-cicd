@@ -33,6 +33,8 @@ GitLab에서는 다양한 Runner를 지원하는데 우리는 그중에서 Kuber
 
 Kubernetes Cluster를 GitLab 프로젝트에 연동하고 Runner를 생성해보자.
 
+**Group Level 클러스터가 이미 생성되어 있는경우 생략하셔도 됩니다.
+
 ## Kubernetes Cluster 연동하기
 
 1. 프로젝트 왼쪽 메뉴에서 **Operation > Kubernetes** 메뉴에서 **Add Kubernetes Cluster** 를 클릭한다.
@@ -118,7 +120,7 @@ Gradle Build가 끝나면 완성된 Jar 파일을 Docker Image 형태로 만들�
 
     services:
       - name: docker:18.09-dind
-        command: ["--insecure-registry=192.168.0.41:4567"]
+        command: ["--insecure-registry=192.168.0.51:4567"]
       
     variables:
       DOCKER_HOST: tcp://localhost:2375
@@ -130,7 +132,7 @@ Gradle Build가 끝나면 완성된 Jar 파일을 Docker Image 형태로 만들�
     docker-build: 
       stage: docker-build
       script: 
-        - docker login -u admin -p admin123 $CI_REGISTRY 
+        - docker login -u admin -p admin $CI_REGISTRY 
         - docker build -t $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID . 
         - docker tag $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID $CI_REGISTRY_IMAGE:latest
         - docker push $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID
@@ -143,7 +145,7 @@ before_script의 export 명령의 통해 우리는 다양한 환경변수를 기
 
 > 보통 레포지토리 주소/계정명/프로젝트명 으로 이루어져있다.
 
-> ex) 192.168.0.41:4567/ywkim/citest
+> ex) 192.168.0.51:4567/ywkim/citest
 
 `$CI_PIPELINE_ID`는 각 파이프 라인의 번호를 가지고있다.
 
@@ -180,7 +182,7 @@ Deployment 배포에 필요한 yaml 문서는 아래와 같다.
         spec:
           containers: 
           - name: citest #생성할 Pod의 이름
-            image: 192.168.0.41:4567/ywkim/citest:latest #Pod 생성시 사용할 Image
+            image: 192.168.0.51:4567/ywkim/citest:latest #Pod 생성시 사용할 Image
             ports:
             - containerPort: 8080 #Pod의 포트 사용정보
 
