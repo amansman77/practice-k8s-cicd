@@ -23,6 +23,7 @@ gradle-build:
     GRADLE_OPTS: "-Dorg.gradle.daemon=false" 
   before_script: 
     - export GRADLE_USER_HOME=`pwd`/.gradle 
+    
   script: 
     - gradle build 
   cache: 
@@ -30,6 +31,8 @@ gradle-build:
     paths: #캐싱할 대상들 
       - build 
       - .gradle 
+      - .gradle/wrapper
+      - .gradle/caches
   artifacts: #다음 Job으로 전달할 파일 또는 디렉토리
     paths: 
       - build/libs/*.jar 
