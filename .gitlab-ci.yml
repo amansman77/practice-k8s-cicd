@@ -6,6 +6,7 @@ services:
   
 variables:
   DOCKER_HOST: tcp://localhost:2375
+  DOCKER_DRIVER: overlay2
 
 before_script: #Job 실행 전 우선 실행 스크립트
   - export 
