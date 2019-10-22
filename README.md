@@ -81,7 +81,7 @@ Job을 등록하는 방법은 `.gitlab-ci.yml`문서에 기록하면 된다.
 	  - gradle-build #Job의 순서
 
 	gradle-build: 
-	  image: gradle:alpine 
+	  image: gradle:jdk12 
 	  stage: gradle-build
 	  variables: 
 	    GRADLE_OPTS: "-Dorg.gradle.daemon=false" 
